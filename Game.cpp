@@ -57,13 +57,13 @@ bool Game::check_valid_move(string move) {
     colInput = toupper(colInput);
     
     if (move.length() != 2) {
-        cout << "Error 1: " << p1.get_name() << " you entered an invalid input"
+        cout << p1.get_name() << " you entered an invalid input"
         << endl;
         return false;
     }
-    else if ((move[0] < 1 || move[0] > 8)
-             && (colInput < 'A' || colInput > 'H')) {
-        cout << "Error 2: " << p1.get_name()
+    else if ((move[0] < '1' || move[0] > '8')
+             || (colInput < 'A' || colInput > 'H')) {
+        cout << p1.get_name()
         << " you entered an invalid position" << endl;
         return false;
     }

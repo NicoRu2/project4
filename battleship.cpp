@@ -66,8 +66,7 @@ int main() {
         print_closer();
         return 0;
     }
-    
-    game.start(menuChoice, MAX_ROUNDS);
+    game.start(EASY, MAX_ROUNDS);
     
     print_closer();
 

@@ -62,19 +62,19 @@ bool Ship::is_horizontal() {
 
 bool Ship::has_position(Position pos) {
     if (pos.get_row() >= start.get_row() && pos.get_row() <= end.get_row()
-        && !is_horizontal()) {
+        && !is_horizontal() && pos.get_col() == start.get_col()) {
         return true;
     }
     else if (pos.get_row() >= end.get_row() && pos.get_row() <= start.get_row()
-             && !is_horizontal()) {
+             && !is_horizontal() && pos.get_col() == start.get_col()) {
         return true;
     }
     else if (pos.get_col() >= start.get_col() && pos.get_col() <= end.get_col()
-             && is_horizontal()) {
+             && is_horizontal() && pos.get_row() == start.get_row()) {
         return true;
     }
     else if (pos.get_col() >= end.get_col() && pos.get_col() <= start.get_col()
-             && is_horizontal()) {
+             && is_horizontal() && pos.get_row() == start.get_row()) {
         return true;
     }
     else {
