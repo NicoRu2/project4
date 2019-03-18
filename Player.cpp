@@ -4,8 +4,8 @@
  * Player.cpp
  * Project UID 4cd2d66df3154b6c8b0ff27aa6791edb
  *
- * Michael Hymowitz, Teddy Sweeney
- * mhymo, tsween
+ * Teddy Sweeney, Michael Hymowitz
+ * tsween, mhymo
  *
  * Project 4: Battleship
  *
@@ -67,7 +67,7 @@ void Player::add_ship(Ship ship) {
     }
     else {
         ++num_ships;
-        ++remaining_ships;
+        remaining_ships += 1;
         Position shipStart = ship.get_start();
         Position shipEnd = ship.get_end();
         ships[(num_ships - 1)] = ship;
@@ -118,7 +118,6 @@ void Player::attack(Player &opponent, Position pos) {
             
             opponent.grid[pos.get_row()][pos.get_col()] = HIT_LETTER;
             opponent_grid[pos.get_row()][pos.get_col()] = HIT_LETTER;
-            cout << name << " " << pos << " hit" << endl;
             int shipNum = 0;
             for (int i = 0; i < MAX_NUM_SHIPS; ++i) {
                 if (opponent.ships[i].has_position(pos)) {
@@ -130,12 +129,12 @@ void Player::attack(Player &opponent, Position pos) {
                 announce_ship_sunk(opponent.ships[shipNum].get_size());
                 opponent.remaining_ships -= 1;
             }
+            cout << name << " " << pos << " hit" << endl;
         }
         else {
             opponent.grid[pos.get_row()][pos.get_col()] = MISS_LETTER;
             opponent_grid[pos.get_row()][pos.get_col()] = MISS_LETTER;
-            cout << name << " (" << pos.get_row() << ',' 
-                 << pos.get_col() << ") miss" << endl;
+            cout << name << " " << pos << " miss" << endl;
         }
     }
     return;
@@ -165,27 +164,35 @@ bool Player::load_grid_file(string filename) {
     bool result = false;
     char rowInput;
     char colInput;
-    while (inputData.good()) {
+    string posInput;
+    int counter = 0;
+    while (!inputData.fail() && counter <= MAX_NUM_SHIPS) {
         result = true;
-        inputData >> rowInput;
-        if (rowInput == '(') {
-            char filler;
-            inputData >> rowInput >> filler >> colInput >> filler;
-            Position startPos(rowInput, colInput);
-            inputData >> filler >> filler >> rowInput >> filler >> colInput;
-            Position endPos(rowInput, colInput);
-            Ship ship_in(startPos, endPos);
-            add_ship(ship_in);
+        inputData >> posInput;
+        
+        //Checks the format of the input
+        if (posInput[0] == '('){
+            rowInput = posInput[1];
+            colInput = posInput[3];
         }
         else {
-            inputData >> colInput;
-            Position startPos(rowInput, colInput);
-            char filler;
-            inputData >> filler >> rowInput >> colInput;
-            Position endPos(rowInput, colInput);
-            Ship ship_in(startPos, endPos);
-            add_ship(ship_in);
+            rowInput = posInput[0];
+            colInput = posInput[1];
         }
+        Position startPos(rowInput, colInput);
+        inputData >> posInput;
+        if (posInput[0] == '(') {
+            rowInput = posInput[1];
+            colInput = posInput[3];
+        }
+        else {
+            rowInput = posInput[0];
+            colInput = posInput[1];
+        }
+        Position endPos(rowInput, colInput);
+        Ship ship_in(startPos, endPos);
+        add_ship(ship_in);
+        counter++;
     }
     return result;
 }

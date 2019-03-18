@@ -26,6 +26,50 @@ using namespace std;
 
 
 int main() {
+    print_initial_header();
+    
+    string playerName;
+    cout << "Enter your name: ";
+    getline(cin, playerName);
+    
+    Player p1(playerName);
+    Player p2("CPU");
+    
+    char gridChoice1 = ' ';
+    char gridChoice2 = ' ';
+    cout << "Read your grid from file grid1.txt? (y or n): ";
+    cin >> gridChoice1;
+    cout << "Read CPU grid from file grid2.txt? (y or n): ";
+    cin >> gridChoice2;
+    
+    Game game;
+    
+    if (gridChoice1 == 'y' && gridChoice2 == 'y') {
+        game = Game(p1, "grid1.txt", p2, "grid2.txt");
+    }
+    else if (gridChoice1 == 'y' && gridChoice2 == 'n') {
+        game = Game(p1, "grid1.txt", p2, "");
+    }
+    else if (gridChoice1 == 'n' && gridChoice2 == 'y') {
+        game = Game(p1, "", p2, "grid2.txt");
+    }
+    else {
+        game = Game(p1, "", p2, "");
+    }
+    
+    int menuChoice = get_menu_choice();
+    while (menuChoice == 2) {
+        cout << "Under Construction" <<endl;
+        menuChoice = get_menu_choice();
+    }
+    if (menuChoice == 4) {
+        print_closer();
+        return 0;
+    }
+    
+    game.start(menuChoice, MAX_ROUNDS);
+    
+    print_closer();
 
 /* 
     TODO: implement the following steps. 

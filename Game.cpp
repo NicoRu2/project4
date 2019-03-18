@@ -4,12 +4,12 @@
  * Game.cpp
  * Project UID 4cd2d66df3154b6c8b0ff27aa6791edb
  *
- * <#Name#>
- * <#Uniqname#>
+ * Michael Hymowitz, Teddy Sweeney
+ * mhymo, tsween
  *
  * Project 4: Battleship
  *
- * <#description#>
+ * Contains function definitions for the class Game.
  */
 
 #include <fstream>
@@ -18,35 +18,98 @@
 
 
 Game::Game() {
-    // TODO: write implementation here.
+    p1 = Player();
+    p2 = Player();
 }
 
 Game::Game(Player player1, string grid1, Player player2, string grid2) {
-    // TODO: write implementation here.
+
+    if (grid1.empty() || !player1.load_grid_file(grid1)) {
+        generate_random_grid(player1);
+        cout << "Generating random grid for " << player1.get_name() << endl;
+    }
+    if (grid2.empty() || !player2.load_grid_file(grid2)) {
+        generate_random_grid(player2);
+        cout << "Generating random grid for CPU";
+    }
+    p1 = player1;
+    p2 = player2;
+
 }
 
 Player Game::get_p1() {
-    // TODO: write implementation here.
-    return Player();
+    return p1;
 }
 
 Player Game::get_p2() {
-    // TODO: write implementation here.
-    return Player();
+    return p2;
 }
 
 string Game::get_move(string player_name) {
-    // TODO: write implementation here.
-    return "";
+    string move;
+    cout << player_name << " enter your move: ";
+    cin >> move;
+    return move;
 }
 
 bool Game::check_valid_move(string move) {
-    // TODO: write implementation here.
-    return false;
+    char colInput = move[1];
+    colInput = toupper(colInput);
+    
+    if (move.length() != 2) {
+        cout << "Error 1: " << p1.get_name() << " you entered an invalid input"
+        << endl;
+        return false;
+    }
+    else if ((move[0] < 1 || move[0] > 8)
+             && (colInput < 'A' || colInput > 'H')) {
+        cout << "Error 2: " << p1.get_name()
+        << " you entered an invalid position" << endl;
+        return false;
+    }
+    return true;
 }
 
 void Game::start(char difficulty, int max_rounds) {
-    // TODO: write implementation here.
+    int round = 0;
+    while (round <= MAX_ROUNDS) {
+        ++round;
+        string move = get_move(p1.get_name());
+        while (!check_valid_move(move)) {
+            move = get_move(p1.get_name());
+        }
+        Position pos(move[0], move[1]);
+        cout << endl << endl;
+        p1.attack(p2, pos);
+        
+        if (p2.destroyed()) {
+            cout << "Your grid" << endl;
+            p1.print_grid();
+            cout << "CPU's grid" << endl;
+            p1.print_opponent_grid();
+            
+            cout << "Game over, winner is " << p1.get_name() << " in " << round
+                 << " rounds" << endl;
+            
+            // The Game is over if player 2 is detroyed.
+            return;
+        }
+        
+        opponent_make_move(difficulty);
+        if (!p1.destroyed()) {
+            cout << "Your grid" << endl;
+            p1.print_grid();
+            cout << "CPU's grid" << endl;
+            p1.print_opponent_grid();
+        }
+        else {
+            cout << "Game over, winner is CPU in " << round << " rounds"
+                 << endl;
+            
+            // The Game is over if player 1 is detroyed.
+            return;
+        }
+    }
 }
 
 // Your code goes above this line.
